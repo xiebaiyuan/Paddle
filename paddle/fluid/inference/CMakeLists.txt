@@ -41,3 +41,6 @@ endif()
 if(NOT APPLE)
   add_subdirectory(api)
 endif()
+
+add_executable(paddle_fluid_test paddle_fluid_test.cpp)
+target_link_libraries(paddle_fluid_test paddle_fluid)
