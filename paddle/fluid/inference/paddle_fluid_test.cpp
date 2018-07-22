@@ -15,7 +15,7 @@
 DEFINE_int32(batch_size,
 1, "Batch size of input data");
 DEFINE_string(dirname,
-"/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/image_classification_resnet.inference.model", "Directory of the inference model.");
+"/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/mobilenet", "Directory of the inference model.");
 DEFINE_string(combine_dirname,
 "/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/googlenet_combine", "combine dir");
 DEFINE_int32(repeat,
@@ -148,14 +148,14 @@ void TestInference(const std::string &dirname,
             inference_program.get()->GetFetchTargetNames();
 
     // 4. Prepare inputs: set up maps for feed targets
-    std::map<std::string, const paddle::framework::LoDTensor *> *feed_targets = new std::map<std::string, const paddle::framework::LoDTensor *>;
+    auto *feed_targets = new std::map<std::string, const paddle::framework::LoDTensor *>;
     for (size_t i = 0; i < feed_target_names.size(); ++i) {
         // Please make sure that cpu_feeds[i] is right for feed_target_names[i]
         (*feed_targets)[feed_target_names[i]] = cpu_feeds[i];
     }
 
     // 5. Define Tensor to get the outputs: set up maps for fetch targets
-    std::map<std::string, paddle::framework::LoDTensor *> *fetch_targets = new std::map<std::string, paddle::framework::LoDTensor *>;
+    auto *fetch_targets = new std::map<std::string, paddle::framework::LoDTensor *>;
     for (size_t i = 0; i < fetch_target_names.size(); ++i) {
         (*fetch_targets)[fetch_target_names[i]] = cpu_fetchs[i];
     }
@@ -240,7 +240,7 @@ int main() {
     // Run inference on CPU
     LOG(INFO) << "--- CPU Runs: ---";
     TestInference<paddle::platform::CPUPlace, false, true>(
-            FLAGS_combine_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, true);
+            FLAGS_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, false);
     LOG(INFO) << output1.dims();
 
     return 0;
