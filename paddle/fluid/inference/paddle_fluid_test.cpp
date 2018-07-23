@@ -13,13 +13,14 @@
 #include "paddle/fluid/platform/profiler.h"
 
 DEFINE_int32(batch_size,
-1, "Batch size of input data");
+             1, "Batch size of input data");
 DEFINE_string(dirname,
-"/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/mobilenet", "Directory of the inference model.");
+              "/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/mobilenet+ssd",
+              "Directory of the inference model.");
 DEFINE_string(combine_dirname,
-"/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/googlenet_combine", "combine dir");
+              "/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/googlenet_combine", "combine dir");
 DEFINE_int32(repeat,
-1, "Running the inference program repeat times");
+             1, "Running the inference program repeat times");
 
 template<typename T>
 void SetupTensor(paddle::framework::LoDTensor *input,
@@ -28,10 +29,11 @@ void SetupTensor(paddle::framework::LoDTensor *input,
     std::mt19937 rng(seed++);
     std::uniform_real_distribution<double> uniform_dist(0, 1);
 
-    T *input_ptr = input->mutable_data<T>(dims, paddle::platform::CPUPlace());
-
+    auto *input_ptr = input->mutable_data<T>(dims, paddle::platform::CPUPlace());
+    std::cout << "input->numel() size = " << input->numel() << std::endl;
     for (int i = 0; i < input->numel(); ++i) {
         input_ptr[i] = static_cast<T>(uniform_dist(rng) * (upper - lower) + lower);
+        //   std::cout<< "index-"<<i<<" = "<<input_ptr[i]<<std::endl;
     }
 }
 
@@ -156,8 +158,11 @@ void TestInference(const std::string &dirname,
 
     // 5. Define Tensor to get the outputs: set up maps for fetch targets
     auto *fetch_targets = new std::map<std::string, paddle::framework::LoDTensor *>;
+    std::cout << "fetch_target_names.size: " << fetch_target_names.size() << std::endl;
+
     for (size_t i = 0; i < fetch_target_names.size(); ++i) {
         (*fetch_targets)[fetch_target_names[i]] = cpu_fetchs[i];
+        std::cout << "cpu_fetchs[i]: " << cpu_fetchs[i] << std::endl;
     }
 
     // 6. Run the inference program
@@ -228,8 +233,17 @@ int main() {
     paddle::framework::LoDTensor input;
     // Use normilized image pixels as input data,
     // which should be in the range [0.0, 1.0].
-    SetupTensor<float>(&input, {FLAGS_batch_size, 3, 224, 224},
+
+    // mobilenet goodnet
+//    SetupTensor<float>(&input, {FLAGS_batch_size, 3, 224, 224},
+//                       static_cast<float>(0), static_cast<float>(1));
+
+
+// mobilenet ssd
+    SetupTensor<float>(&input, {FLAGS_batch_size, 3, 300, 300},
                        static_cast<float>(0), static_cast<float>(1));
+
+
     std::vector<paddle::framework::LoDTensor *> cpu_feeds;
     cpu_feeds.push_back(&input);
 
@@ -241,7 +255,29 @@ int main() {
     LOG(INFO) << "--- CPU Runs: ---";
     TestInference<paddle::platform::CPUPlace, false, true>(
             FLAGS_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, false);
+
+    std::cout << "cpu_fetchs1: " << cpu_fetchs1.size() << std::endl;
+
+    for (int j = 0; j < cpu_fetchs1.size(); ++j) {
+        paddle::framework::LoDTensor *&pTensor = cpu_fetchs1.at(j);
+        std::cout << "cpu_fetchs1.at[" << j << "] :" << pTensor << std::endl;
+
+        int numel = (*pTensor).numel();
+        std::cout << "pTensor numel: " << numel << std::endl;
+
+//        int stride = numel / 20;
+//        stride = stride > 0 ? stride : 1;
+//        for (int i = 0; i < numel; i += stride) {
+//            std::cout << "(*pTensor).data<float>()[" << i << "] =" << (*pTensor).data<float>()[i] << std::endl;
+//        }
+
+        for (int i = 0; i < numel; i ++) {
+            std::cout << "(*pTensor).data<float>()[" << i << "] =" << (*pTensor).data<float>()[i] << std::endl;
+        }
+
+    }
     LOG(INFO) << output1.dims();
+
 
     return 0;
 }
