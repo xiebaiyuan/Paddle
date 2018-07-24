@@ -18,7 +18,7 @@ DEFINE_string(dirname,
               "/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/mobilenet+ssd",
               "Directory of the inference model.");
 DEFINE_string(combine_dirname,
-              "/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/googlenet_combine", "combine dir");
+              "/Users/xiebaiyuan/PaddleProject/Paddle/paddle/fluid/inference/tests/mobilenet_ssd_combined", "combine dir");
 DEFINE_int32(repeat,
              1, "Running the inference program repeat times");
 
@@ -254,7 +254,7 @@ int main() {
     // Run inference on CPU
     LOG(INFO) << "--- CPU Runs: ---";
     TestInference<paddle::platform::CPUPlace, false, true>(
-            FLAGS_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, false);
+            FLAGS_combine_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, true);
 
     std::cout << "cpu_fetchs1: " << cpu_fetchs1.size() << std::endl;
 
@@ -265,15 +265,15 @@ int main() {
         int numel = (*pTensor).numel();
         std::cout << "pTensor numel: " << numel << std::endl;
 
-//        int stride = numel / 20;
-//        stride = stride > 0 ? stride : 1;
-//        for (int i = 0; i < numel; i += stride) {
-//            std::cout << "(*pTensor).data<float>()[" << i << "] =" << (*pTensor).data<float>()[i] << std::endl;
-//        }
-
-        for (int i = 0; i < numel; i ++) {
+        int stride = numel / 20;
+        stride = stride > 0 ? stride : 1;
+        for (int i = 0; i < numel; i += stride) {
             std::cout << "(*pTensor).data<float>()[" << i << "] =" << (*pTensor).data<float>()[i] << std::endl;
         }
+
+//        for (int i = 0; i < numel; i ++) {
+//            std::cout << "(*pTensor).data<float>()[" << i << "] =" << (*pTensor).data<float>()[i] << std::endl;
+//        }
 
     }
     LOG(INFO) << output1.dims();
