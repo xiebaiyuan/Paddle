@@ -42,5 +42,20 @@ if(NOT APPLE)
   add_subdirectory(api)
 endif()
 
+find_package(OpenCV REQUIRED)
+
+# paddle fluid test
 add_executable(paddle_fluid_test paddle_fluid_test.cpp)
 target_link_libraries(paddle_fluid_test paddle_fluid)
+
+# paddle fluid mobilenetssd test
+add_executable(paddle_fluid_opencv_mobilenetssd_test paddle_fluid_opencv_mobilenetssd_test.cpp cv_image_reader.cpp cv_image_reader.h)
+
+target_link_libraries(paddle_fluid_opencv_mobilenetssd_test ${OpenCV_LIBS} paddle_fluid)
+
+## imagetest
+#add_executable(image_test image_test.cpp cv_image_reader.cpp cv_image_reader.h)
+#target_link_libraries(image_test ${OpenCV_LIBS})
+
+
+

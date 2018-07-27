@@ -117,6 +117,9 @@ void LoadPersistables(framework::Executor* executor, framework::Scope* scope,
 std::unique_ptr<framework::ProgramDesc> Load(framework::Executor* executor,
                                              framework::Scope* scope,
                                              const std::string& dirname) {
+
+  std::cout<<"load dirname: "<<dirname<<std::endl;
+
   std::string model_filename = dirname + "/__model__";
   std::string program_desc_str;
   VLOG(3) << "loading model from " << model_filename;
