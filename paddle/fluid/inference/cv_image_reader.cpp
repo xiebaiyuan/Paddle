@@ -102,7 +102,7 @@ void ReadImage(const char *filename, paddle::framework::LoDTensor *input, paddle
             } else if (i < bs.size() + gs.size()) {
                 input_ptr[i] = (gs[i - bs.size()] - pMeans[1]) * scale;
             } else {
-                input_ptr[i] = (rs[i - bs.size() - rs.size()] - pMeans[2]) * scale;
+                input_ptr[i] = (rs[i - bs.size() - gs.size()] - pMeans[2]) * scale;
             }
         }
     }
