@@ -16,7 +16,7 @@
 DEFINE_int32(batch_size,
              1, "Batch size of input data");
 DEFINE_string(dirname,
-		"/home/fluid/Paddle/paddle/fluid/inference/resnet",
+		"/home/parallels/Paddle/paddle/fluid/inference/models/superresolution",
               "Directory of the inference model.");
 DEFINE_string(combine_dirname,
               "/home/parallels/Paddle/paddle/fluid/inference/models/superresolution",
@@ -256,7 +256,7 @@ int main() {
 //    SetupTensor<float>(&input, {FLAGS_batch_size, 3, 224, 224},
 //                       static_cast<float>(0), static_cast<float>(1));
 
-    GetInput<float>("/home/fluid/Paddle/paddle/fluid/inference/images/input_3x224x224_banana", &input, {FLAGS_batch_size, 3, 224, 224});
+    GetInput<float>("/home/parallels/Paddle/paddle/fluid/inference/images/input_3x224x224_banana", &input, {FLAGS_batch_size, 1, 224, 224});
 for (int j = 0; j < input.numel(); j+=1000) {
       std::cout << "input[" << j << "]=  " << input.data<float>()[j]<< std::endl;
     }
@@ -271,7 +271,7 @@ for (int j = 0; j < input.numel(); j+=1000) {
     // Run inference on CPU
     LOG(INFO) << "--- CPU Runs: ---";
     TestInference<paddle::platform::CPUPlace, false, true>(
-            FLAGS_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, false);
+            FLAGS_dirname, cpu_feeds, cpu_fetchs1, FLAGS_repeat, true);
 
     std::cout << "cpu_fetchs1: " << cpu_fetchs1.size() << std::endl;
 
