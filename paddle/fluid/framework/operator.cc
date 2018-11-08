@@ -150,6 +150,71 @@ void OperatorBase::Run(const Scope& scope, const platform::Place& place) {
   platform::RecordEvent record_event(Type(), pool.Get(place));
   RunImpl(scope, place);
   VLOG(3) << place << " " << DebugStringEx(&scope);
+  std::cout << "op -------------------------------------------"<<std::endl;
+  std::cout <<" op type - " << Type() << std::endl;
+    try {
+      //  OutputVars({""});
+      std::cout << " inputs: " << std::endl;
+
+//      for (auto output : inputs_) {
+//        for (auto key : inputs_) {
+//          std::cout << " key - " << key << std::endl;
+//          auto var = scope.FindVar(key);
+//          if (var->IsType<LoDTensor>()) {
+//            Tensor *t = var->GetMutable<LoDTensor>();
+//            std::cout << " dims - " << t->dims() << std::endl;
+//
+//            if(t){
+//              auto data = t->data<float>();
+//
+//              auto stride = t->numel()/20;
+//              for (int j = 0; j < 20; ++j) {
+//                if(stride>0)
+//                  std::cout << " ( " << j * stride << ": " << data[j * stride] << ") ";
+//                else{ std::cout << " (" << j << ": " << data[j] << ") ";}
+//              }
+//            }
+//          }
+//        }
+//      }
+//      std::cout<< std::endl;
+
+
+
+        //  OutputVars({""});
+        std::cout << " outputs: " << std::endl;
+
+        for (auto output : outputs_) {
+            for (auto key : output.second) {
+                std::cout << " key - " << key << std::endl;
+                auto var = scope.FindVar(key);
+                if (var->IsType<LoDTensor>()) {
+                    Tensor *t = var->GetMutable<LoDTensor>();
+                    std::cout << " dims - " << t->dims() << std::endl;
+
+                    if(t){
+                        auto data = t->data<float>();
+
+                        auto stride = t->numel()/20;
+                        for (int j = 0; j < 20; ++j) {
+                            if(stride>0)
+                                //std::cout << " ( " << j * stride << ": " << data[j * stride] << ") ";
+                                std::cout << data[j * stride] << " ";
+                            else{
+                            //  std::cout << " (" << j << ": " << data[j] << ") ";
+                              std::cout  << data[j] << " ";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        std::cout<< std::endl;
+    }catch (...){
+        std::cout << "print exception: " << std::endl;
+    }
+
+
 }
 
 bool OperatorBase::HasInputs(const std::string& name) const {

@@ -80,6 +80,20 @@ target_link_libraries(paddle_fluid_test_mobilenet paddle_fluid)
 add_executable(paddle_fluid_test_genet paddle_fluid_test_genet.cpp)
 target_link_libraries(paddle_fluid_test_genet paddle_fluid)
 
+
+# paddle fluid test
+add_executable(paddle_fluid_test_fssd paddle_fluid_test_fssd.cpp)
+target_link_libraries(paddle_fluid_test_fssd paddle_fluid)
+
+
+
+# paddle fluid test
+add_executable(paddle_fluid_test_ssd test_mobilenet+ssd.cpp)
+target_link_libraries(paddle_fluid_test_ssd paddle_fluid)
+
+# paddle fluid test
+add_executable(paddle_fluid_test_superresolution paddle_fluid_test_superresolution.cpp)
+target_link_libraries(paddle_fluid_test_superresolution paddle_fluid)
 # paddle fluid test
 #add_executable(paddle_fluid_test_resnet paddle_fluid_test_resnet.cpp)
 #target_link_libraries(paddle_fluid_test_resnet paddle_fluid)
